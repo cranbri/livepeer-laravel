@@ -44,7 +44,7 @@
     }
   },
   "config": {
-    "sort-packages": true,
+    "sort-packages": true
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -54,7 +54,7 @@
     "stan": "vendor/bin/phpstan analyse",
     "check": [
       "@cs:check",
-      "@stan",
+      "@stan"
     ]
   }
 }
