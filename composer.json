@@ -1,0 +1,60 @@
+{
+  "name": "cranbri/livepeer-laravel",
+  "description": "Laravel integration for Livepeer Studio API",
+  "type": "library",
+  "license": "MIT",
+  "keywords": ["livepeer", "api", "video", "streaming", "laravel"],
+  "authors": [
+    {
+      "name": "Tom Burman",
+      "email": "tburman@cranbri.agency"
+    }
+  ],
+  "require": {
+    "php": "^8.2",
+    "cranbri/livepeer-php": "^1.0",
+    "illuminate/contracts": "^11.0|^12.0",
+    "illuminate/support": "^11.0|^12.0",
+    "spatie/laravel-webhook-client": "^3.4"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^10.0",
+    "friendsofphp/php-cs-fixer": "^3.75",
+    "phpstan/phpstan": "^2.1",
+    "captainhook/captainhook": "^5.25"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cranbri\\Laravel\\Livepeer\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cranbri\\Laravel\\Livepeer\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Cranbri\\Laravel\\Livepeer\\LivepeerServiceProvider"
+      ],
+      "aliases": {
+        "Livepeer": "Cranbri\\Laravel\\Livepeer\\Facades\\Livepeer"
+      }
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "scripts": {
+    "cs:check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "cs:fix": "vendor/bin/php-cs-fixer fix",
+    "stan": "vendor/bin/phpstan analyse",
+    "check": [
+      "@cs:check",
+      "@stan"
+    ]
+  }
+}
