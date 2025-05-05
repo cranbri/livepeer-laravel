@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cranbri\Livepeer\Laravel\Facades;
+namespace Cranbri\Laravel\Livepeer\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

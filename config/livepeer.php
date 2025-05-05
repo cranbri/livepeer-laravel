@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Cranbri\Livepeer\Laravel\LivepeerWebhookProfile;
+use Cranbri\Laravel\Livepeer\LivepeerWebhookProfile;
 
 return [
     /*

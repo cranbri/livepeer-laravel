@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Cranbri\Livepeer\Laravel;
+namespace Cranbri\Laravel\Livepeer;
 
-use Cranbri\Livepeer\Laravel\Exceptions\WebhookFailed;
+use Cranbri\Laravel\Livepeer\Exceptions\WebhookFailed;
 use Spatie\WebhookClient\Jobs\ProcessWebhookJob;
 use Spatie\WebhookClient\Models\WebhookCall;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cranbri\Livepeer\Laravel\Exceptions;
+namespace Cranbri\Laravel\Livepeer\Exceptions;
 
 use Exception;
 use Spatie\WebhookClient\Models\WebhookCall;

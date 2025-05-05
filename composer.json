@@ -18,10 +18,10 @@
     "spatie/laravel-webhook-client": "^3.4"
   },
   "require-dev": {
-    "orchestra/testbench": "^10.0",
+    "captainhook/captainhook": "^5.25",
     "friendsofphp/php-cs-fixer": "^3.75",
-    "phpstan/phpstan": "^2.1",
-    "captainhook/captainhook": "^5.25"
+    "orchestra/testbench": "^10.0",
+    "phpstan/phpstan": "^2.1"
   },
   "autoload": {
     "psr-4": {
@@ -44,7 +44,7 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -54,7 +54,7 @@
     "stan": "vendor/bin/phpstan analyse",
     "check": [
       "@cs:check",
-      "@stan"
+      "@stan",
     ]
   }
 }

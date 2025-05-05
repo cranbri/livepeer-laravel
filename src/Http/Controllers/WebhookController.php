@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Cranbri\LaravelLivepeer\Http\Controllers;
 
-use Cranbri\Livepeer\Laravel\ProcessLivepeerWebhookJob;
-use Cranbri\Livepeer\Laravel\LivepeerSignatureValidator;
+use Cranbri\Laravel\Livepeer\ProcessLivepeerWebhookJob;
+use Cranbri\Laravel\Livepeer\LivepeerSignatureValidator;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Spatie\WebhookClient\WebhookConfig;

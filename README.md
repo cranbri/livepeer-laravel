@@ -71,7 +71,7 @@ LIVEPEER_WEBHOOK_SECRET=your-webhook-signing-secret
 This package provides a Facade for easy access to the Livepeer API:
 
 ```php
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 // List all assets
 $assets = Livepeer::listAssets();
@@ -103,7 +103,7 @@ Upload an asset from a URL:
 ```php
 use Cranbri\Livepeer\Data\Asset\UrlUploadAssetData;
 use Cranbri\Livepeer\Data\PlaybackPolicyData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new UrlUploadAssetData(
     name: 'My Video',
@@ -118,7 +118,7 @@ Request an upload URL for direct upload:
 
 ```php
 use Cranbri\Livepeer\Data\Asset\UploadAssetData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new UploadAssetData(
     name: 'My Video',
@@ -136,7 +136,7 @@ Update an asset:
 
 ```php
 use Cranbri\Livepeer\Data\Asset\UpdateAssetData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new UpdateAssetData(name: 'Updated Video Name');
 $response = Livepeer::updateAsset('asset-id', $data);
@@ -156,7 +156,7 @@ Create a new livestream:
 use Cranbri\Livepeer\Data\Livestream\CreateLivestreamData;
 use Cranbri\Livepeer\Data\PlaybackPolicyData;
 use Cranbri\Livepeer\Data\StreamProfileData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new CreateLivestreamData(
     name: 'My Livestream',
@@ -192,7 +192,7 @@ Update a livestream:
 
 ```php
 use Cranbri\Livepeer\Data\Livestream\UpdateLivestreamData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new UpdateLivestreamData(
     name: 'Updated Stream Name',
@@ -212,7 +212,7 @@ Create a clip from a livestream:
 
 ```php
 use Cranbri\Livepeer\Data\Livestream\CreateClipData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new CreateClipData(
     playbackId: 'playback-id',
@@ -230,7 +230,7 @@ Create a multistream target:
 
 ```php
 use Cranbri\Livepeer\Data\Multistream\CreateTargetData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new CreateTargetData(
     url: 'rtmp://example.com/live',
@@ -245,7 +245,7 @@ Add a multistream target to a livestream:
 ```php
 use Cranbri\Livepeer\Data\AddMultistreamTargetData;
 use Cranbri\Livepeer\Data\Livestream\CreateMultistreamTargetData;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 // Use an existing target
 $data = new AddMultistreamTargetData(
@@ -311,7 +311,7 @@ Create a webhook in Livepeer pointing to your endpoint:
 ```php
 use Cranbri\Livepeer\Data\Webhook\CreateWebhookData;
 use Cranbri\Livepeer\Enums\WebhookEvent;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 $data = new CreateWebhookData(
     name: 'My Webhook',
@@ -552,7 +552,7 @@ All API errors are converted to `LivepeerException` instances:
 
 ```php
 use Cranbri\Livepeer\Exceptions\LivepeerException;
-use Cranbri\Livepeer\Laravel\Facades\Livepeer;
+use Cranbri\Laravel\Livepeer\Facades\Livepeer;
 
 try {
     $asset = Livepeer::getAsset('invalid-asset-id');
@@ -566,7 +566,7 @@ try {
 For webhook errors, the package includes a `WebhookFailed` exception:
 
 ```php
-use Cranbri\Livepeer\Laravel\Exceptions\WebhookFailed;
+use Cranbri\Laravel\Livepeer\Exceptions\WebhookFailed;
 
 try {
     // Process webhook

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cranbri\Livepeer\Laravel;
+namespace Cranbri\Laravel\Livepeer;
 
 use Illuminate\Http\Request;
 use Spatie\WebhookClient\Models\WebhookCall;
