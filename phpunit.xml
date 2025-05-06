@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         testdox="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         stopOnFailure="false"
+>
+    <testsuites>
+        <testsuite name="Livepeer Laravel Package Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:2WO1UqIo6uG4fqrUNK6wtmRo1N7X1EYQylvIrWFn3mo="/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="LIVEPEER_API_KEY" value="d9ab2c2e-99d7-4c4d-befc-ff7c217997d4"/>
+    </php>
+</phpunit>

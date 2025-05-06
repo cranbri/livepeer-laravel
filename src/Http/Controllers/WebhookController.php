@@ -2,18 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Cranbri\LaravelLivepeer\Http\Controllers;
+namespace Cranbri\Laravel\Livepeer\Http\Controllers;
 
-use Cranbri\Laravel\Livepeer\ProcessLivepeerWebhookJob;
 use Cranbri\Laravel\Livepeer\LivepeerSignatureValidator;
+use Cranbri\Laravel\Livepeer\ProcessLivepeerWebhookJob;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\WebhookProcessor;
+use Symfony\Component\HttpFoundation\Response;
 
 class WebhookController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
         $webhookConfig = new WebhookConfig([
             'name' => 'livepeer',

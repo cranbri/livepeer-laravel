@@ -12,6 +12,14 @@ class LivepeerWebhookProfile implements WebhookProfile
 {
     public function shouldProcess(Request $request): bool
     {
-        return ! WebhookCall::where('name', 'livepeer')->where('payload->id', $request->get('id'))->exists();
+        /**
+         * @var \Illuminate\Database\Query\Builder
+         */
+        $query = WebhookCall::query();
+
+        return !$query
+            ->where('name', 'livepeer')
+            ->where('payload->id', $request->get('id'))
+            ->exists();
     }
 }

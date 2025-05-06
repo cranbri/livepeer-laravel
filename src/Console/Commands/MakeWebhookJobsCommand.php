@@ -31,10 +31,8 @@ class MakeWebhookJobsCommand extends Command
 
     /**
      * The namespace for the generated job classes
-     *
-     * @var string
      */
-    protected string $namespace;
+    protected string $namespace = '';
 
     /**
      * Execute the console command.
@@ -43,21 +41,23 @@ class MakeWebhookJobsCommand extends Command
     {
         $events = array_column(WebhookEvent::cases(), 'value');
 
-        if ($this->option('all')) {
-            $selectedEvents = $events;
-            $this->info('Generating job classes for all webhook events...');
-        } else {
-            $selectedEvents = $this->choice(
-                'Select webhook events to generate job classes for (multiple choices allowed, comma separated):',
-                $events,
-                null,
-                null,
-                true
+        $selectedEvents = $this->option('all')
+            ? $events
+            : $this->normalizeSelectedEvents(
+                $this->choice(
+                    'Select webhook events to generate job classes for (multiple choices allowed, comma separated):',
+                    $events,
+                    null,
+                    null,
+                    true
+                )
             );
-        }
 
-        $basePath = $this->option('path') ?? app_path('Jobs/Livepeer');
-        $this->namespace = $this->option('namespace') ?? $this->determineNamespace($basePath);
+        $basePath = $this->sanitizePath($this->option('path'));
+
+        $this->namespace = $this->sanitizeNamespace(
+            $this->option('namespace')
+        );
 
         foreach ($selectedEvents as $event) {
             $this->createJobClass($event, $basePath);
@@ -65,8 +65,10 @@ class MakeWebhookJobsCommand extends Command
 
         $this->info('Job classes generated successfully!');
 
-        if ($this->option('auto-update-config') || $this->confirm('Do you want to automatically update the livepeer.php config file?',
-                true)) {
+        if ($this->option('auto-update-config') || $this->confirm(
+            'Do you want to automatically update the livepeer.php config file?',
+            true
+        )) {
             $this->updateConfig($selectedEvents);
         } else {
             $this->showManualConfigInstructions($selectedEvents);
@@ -76,11 +78,108 @@ class MakeWebhookJobsCommand extends Command
     }
 
     /**
+     * Normalize selected events to ensure it's an array of strings
+     *
+     * @param mixed $events
+     * @return array<int, string>
+     */
+    protected function normalizeSelectedEvents($events): array
+    {
+        if ($events === null) {
+            return [];
+        }
+
+        if (is_string($events)) {
+            return [$events];
+        }
+
+        if (is_array($events)) {
+            return array_values(
+                array_filter(
+                    array_map(
+                        fn ($value): string => $this->convertToString($value),
+                        $events
+                    )
+                )
+            );
+        }
+
+        return [];
+    }
+
+    /**
+     * Convert a mixed value to a string, with fallback
+     *
+     * @param mixed $value
+     */
+    protected function convertToString($value): string
+    {
+        if ($value === null) {
+            return '';
+        }
+
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+
+        if (is_scalar($value)) {
+            return (string)$value;
+        }
+
+        return '';
+    }
+
+    /**
+     * Sanitize and validate the path
+     *
+     * @param mixed $path
+     */
+    protected function sanitizePath($path): string
+    {
+        if ($path === null) {
+            return app_path('Jobs/Livepeer');
+        }
+
+        if (is_array($path)) {
+            return app_path('Jobs/Livepeer');
+        }
+
+        $pathString = $this->convertToString($path);
+
+        return $pathString ?: app_path('Jobs/Livepeer');
+    }
+
+    /**
+     * Sanitize and validate the namespace
+     *
+     * @param mixed $namespace
+     */
+    protected function sanitizeNamespace($namespace): string
+    {
+        if ($namespace === null) {
+            return 'App\\Jobs\\Livepeer\\';
+        }
+
+        if (is_array($namespace)) {
+            return 'App\\Jobs\\Livepeer\\';
+        }
+
+        $namespaceString = $this->convertToString($namespace);
+
+        if (empty($namespaceString)) {
+            return 'App\\Jobs\\Livepeer\\';
+        }
+
+        $sanitized = preg_replace('/[^a-zA-Z0-9_\\\\]/', '', $namespaceString) ?: '';
+
+        return rtrim($sanitized, '\\') . '\\';
+    }
+
+    /**
      * Create a job class for the given webhook event.
      *
-     * @param  string  $event
-     * @param  string  $basePath
-     * @return void
+     * @param string $event The webhook event name
+     * @param string $basePath The base path for job class generation
      */
     protected function createJobClass(string $event, string $basePath): void
     {
@@ -96,6 +195,7 @@ class MakeWebhookJobsCommand extends Command
         if (File::exists($path)) {
             if (!$this->confirm("The job class {$className} already exists. Do you want to overwrite it?")) {
                 $this->info("Skipped {$className}.");
+
                 return;
             }
         }
@@ -119,26 +219,9 @@ class MakeWebhookJobsCommand extends Command
     }
 
     /**
-     * Get the job class name for the given webhook event.
-     *
-     * @param  string  $event
-     * @return string
-     */
-    protected function getJobClassName(string $event): string
-    {
-        $parts = explode('.', $event);
-        $formattedParts = array_map(function ($part) {
-            return ucfirst(Str::camel($part));
-        }, $parts);
-
-        return 'Handle'.implode('', $formattedParts).'Job';
-    }
-
-    /**
      * Show manual config update instructions.
      *
-     * @param  array  $selectedEvents
-     * @return void
+     * @param array<int, string> $selectedEvents List of selected webhook events
      */
     protected function showManualConfigInstructions(array $selectedEvents): void
     {
@@ -157,8 +240,7 @@ class MakeWebhookJobsCommand extends Command
     /**
      * Update the livepeer.php config file with the generated job classes.
      *
-     * @param  array  $selectedEvents
-     * @return void
+     * @param array<int, string> $selectedEvents List of selected webhook events
      */
     protected function updateConfig(array $selectedEvents): void
     {
@@ -168,11 +250,13 @@ class MakeWebhookJobsCommand extends Command
             $this->error("Config file not found: $configPath");
             $this->warn("Please publish the config file first using:");
             $this->line("php artisan vendor:publish --provider=\"Cranbri\\Laravel\\Livepeer\\LivepeerServiceProvider\" --tag=\"livepeer-config\"");
+
             return;
         }
 
         $configContent = File::get($configPath);
 
+        /** @var array<string, string> $jobEntries */
         $jobEntries = [];
         foreach ($selectedEvents as $event) {
             $className = $this->getJobClassName($event);
@@ -206,6 +290,7 @@ class MakeWebhookJobsCommand extends Command
             } else {
                 $this->error("Could not find a suitable place to insert webhook_jobs configuration.");
                 $this->showManualConfigInstructions($selectedEvents);
+
                 return;
             }
         }
@@ -218,32 +303,46 @@ class MakeWebhookJobsCommand extends Command
     /**
      * Determine the namespace based on the base path.
      *
-     * @param  string  $basePath
-     * @return string
+     * @param string $basePath The base path for job classes
+     * @return string The determined namespace
      */
     protected function determineNamespace(string $basePath): string
     {
-        $namespace = 'App\\';
+        $baseAppPath = app_path();
+        $relativePath = str_replace($baseAppPath, '', $basePath);
+        $relativePath = trim($relativePath, '/\\');
 
-        $relPath = str_replace(app_path(), '', $basePath);
-        $relPath = trim($relPath, '/\\');
+        $namespace = $relativePath
+            ? 'App\\' . str_replace('/', '\\', $relativePath) . '\\'
+            : 'App\\Jobs\\Livepeer\\';
 
-        if (!empty($relPath)) {
-            $namespacePath = str_replace('/', '\\', $relPath);
-            $namespace .= $namespacePath;
-        }
-
-        return rtrim($namespace, '\\').'\\';
+        return $namespace;
     }
 
     /**
      * Get the fully qualified class name.
      *
-     * @param  string  $className
-     * @return string
+     * @param string $className The base class name
+     * @return string The fully qualified class name
      */
     protected function getFullyQualifiedClassName(string $className): string
     {
-        return $this->namespace.$className;
+        return $this->namespace . $className;
+    }
+
+    /**
+     * Get the job class name for the given webhook event.
+     *
+     * @param string $event The webhook event name
+     * @return string The generated job class name
+     */
+    protected function getJobClassName(string $event): string
+    {
+        $parts = explode('.', $event);
+        $formattedParts = array_map(function ($part) {
+            return ucfirst(Str::camel($part));
+        }, $parts);
+
+        return 'Handle'.implode('', $formattedParts).'Job';
     }
 }

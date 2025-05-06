@@ -52,9 +52,11 @@
     "cs:check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
     "cs:fix": "vendor/bin/php-cs-fixer fix",
     "stan": "vendor/bin/phpstan analyse",
+    "test": "vendor/bin/phpunit tests --display-phpunit-deprecations",
     "check": [
       "@cs:check",
-      "@stan"
+      "@stan",
+      "@test"
     ]
   }
 }

@@ -7,9 +7,9 @@ namespace Cranbri\Laravel\Livepeer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Spatie\WebhookClient\Exceptions\InvalidConfig;
-use Spatie\WebhookClient\WebhookConfig;
 use Spatie\WebhookClient\Exceptions\InvalidWebhookSignature;
 use Spatie\WebhookClient\SignatureValidator\SignatureValidator;
+use Spatie\WebhookClient\WebhookConfig;
 
 class LivepeerSignatureValidator implements SignatureValidator
 {
@@ -19,8 +19,8 @@ class LivepeerSignatureValidator implements SignatureValidator
     {
         $signature = $request->header($config->signatureHeaderName);
 
-        if (!$signature) {
-            throw new InvalidWebhookSignature('The signature header is missing.');
+        if (!is_string($signature)) {
+            throw new InvalidWebhookSignature('The signature header is missing or invalid.');
         }
 
         $signingSecret = $config->signingSecret;
@@ -29,7 +29,7 @@ class LivepeerSignatureValidator implements SignatureValidator
             throw InvalidConfig::signingSecretNotSet();
         }
 
-        $sigArray = explode(',', $signature);
+        $sigArray = explode(',', (string)$signature);
 
         if (count($sigArray) < 2) {
             throw new InvalidWebhookSignature('Invalid signature format');
