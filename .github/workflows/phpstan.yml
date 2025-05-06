@@ -1,0 +1,29 @@
+name: PHPStan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PHP_CS_FIXER_IGNORE_ENV: 1
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer update --prefer-dist --no-interaction --no-suggest
+
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan --error-format=github

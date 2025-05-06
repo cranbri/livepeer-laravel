@@ -55,7 +55,7 @@ class LivepeerPackageTest extends TestCase
         $router->livepeerWebhooks('test/webhook');
 
         $routes = $router->getRoutes();
-        $webhookRoute = collect($routes)->first(fn($route) => $route->getName() === 'livepeer-webhooks');
+        $webhookRoute = collect($routes)->first(fn ($route) => $route->getName() === 'livepeer-webhooks');
 
         $this->assertNotNull($webhookRoute);
         $this->assertSame('POST', $webhookRoute->methods()[0]);

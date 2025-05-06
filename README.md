@@ -30,6 +30,7 @@ A Laravel integration for the [Livepeer Studio API](https://docs.livepeer.org/re
     - [Custom HTTP Client](#custom-http-client)
 - [Testing](#testing)
 - [Contributing](#contributing)
+- [Credits & Acknowledgements](#credits-and-acknowledgements)
 - [Security](#security)
 - [Credits](#credits)
 - [License](#license)
@@ -583,6 +584,21 @@ try {
 composer test
 ```
 
+## Credits and Acknowledgements
+
+### Webhook Implementation
+
+The webhook handling functionality in this package is heavily inspired by [Spatie's Laravel Stripe Webhooks](https://github.com/spatie/laravel-stripe-webhooks) package. We've adapted their excellent approach specifically for Livepeer webhooks, building on their proven architecture for secure and reliable webhook processing.
+
+Key features adapted from Spatie's Stripe webhook implementation include:
+- Secure webhook signature validation
+- Queued webhook processing
+- Webhook storage and retry functionality
+- Job-based architecture for processing webhook events
+
+Our implementation uses [Spatie's Laravel Webhook Client](https://github.com/spatie/laravel-webhook-client) as its foundation, which is the same underlying library that powers their Stripe webhooks package.
+
+We highly recommend checking out Spatie's other Laravel packages at [spatie.be/open-source](https://spatie.be/open-source).
 ## Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
