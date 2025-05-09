@@ -64,7 +64,38 @@ If you plan to use webhooks, also add a webhook signing secret:
 ```
 LIVEPEER_WEBHOOK_SECRET=your-webhook-signing-secret
 ```
+Next, you must publish the migration with:
+```bash
+php artisan vendor:publish --provider="Spatie\WebhookClient\WebhookClientServiceProvider" --tag="webhook-client-migrations"
+```
 
+After the migration has been published you can create the `webhook_calls` table by running the migrations:
+
+```bash
+php artisan migrate
+```
+
+Finally, take care of the routing: In the Livepeer dashboard you must configure at what url Livepeer webhooks should hit your app. In the routes file of your app you must pass that route to `Route::livepeerWebhooks`:
+
+```php
+Route::livepeerWebhooks('webhooks/livepeer');
+```
+
+Behind the scenes this will register a `POST` route to a controller provided by this package. Because Livepeer has no way of getting a csrf-token, you must add that route to the `except` array of the `VerifyCsrfToken` middleware:
+
+```php
+// Laravel 11+
+$middleware->validateCsrfTokens(except: [
+    'webhooks/*',
+]);
+```
+
+```php
+// Laravel 10 and lower
+protected $except = [
+    'webhooks/livepeer',
+];
+```
 ## Usage
 
 ### Basic Usage

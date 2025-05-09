@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cranbri\Laravel\Livepeer;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Spatie\WebhookClient\Exceptions\InvalidConfig;
@@ -69,9 +70,10 @@ class LivepeerSignatureValidator implements SignatureValidator
 
     protected function isValidTimestamp(int $timestamp): bool
     {
-        $now = time();
+        $now = (int) Carbon::now()->getPreciseTimestamp(3);
+        $maxDiffMs = static::MAX_TIMESTAMP_DIFF * 1000;
 
-        return ($now - $timestamp) < static::MAX_TIMESTAMP_DIFF
-            && ($timestamp - $now) < 60;
+        return ($now - $timestamp) < $maxDiffMs
+            && ($timestamp - $now) < 60000;
     }
 }
